@@ -21,7 +21,8 @@ A simple Student Attendance Management System built with Laravel. This applicati
 | **DevOps** | Vite, Composer, NPM |
 
 ## 🖼 Screenshots
-*(You can add screenshots here by dragging and dropping them into the GitHub file editor.)*
+![image](https://github.com/user-attachments/assets/b841dec3-ec7a-4fb5-94f6-1536f11ee4b8)
+![image](https://github.com/user-attachments/assets/9e0bf44e-61b8-4664-bcc9-3b1e6dbb0059)
 
 ## 🚀 Getting Started (Local Setup)
 
