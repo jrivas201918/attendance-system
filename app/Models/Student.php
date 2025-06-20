@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory; // <-- Add this
+use Illuminate\Database\Eloquent\Model;
+
+class Student extends Model
+{
+    use HasFactory; // <-- Add this
+
+    protected $fillable = [
+        'student_id',
+        'name',
+        'email',
+        'course',
+        'year_level',
+    ];
+
+    protected $casts = [
+        'year_level' => 'integer',
+    ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+}
