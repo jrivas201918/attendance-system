@@ -82,4 +82,4 @@ The application will now be available at `http://127.0.0.1:8000`.
 **Joshua Tegio Rivas**
 
 *   **GitHub:** [jrivas201918](https://github.com/jrivas201918)
-*   **LinkedIn:** (Add your LinkedIn profile link here)
+*   **LinkedIn:** [(Add your LinkedIn profile link here)](https://www.linkedin.com/in/joshua-rivas-b9ab02347/)
