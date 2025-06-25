@@ -12,10 +12,32 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $students = Student::latest()->paginate(10);
-        return view('students.index', compact('students'));
+        // Get unique courses and years for filter dropdowns
+        $courses = Student::query()->select('course')->distinct()->pluck('course')->filter()->sort()->values();
+        $years = Student::query()->select('year_level')->distinct()->pluck('year_level')->filter()->sort()->values();
+
+        // Build the query for filtering/search
+        $query = Student::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('student_id', 'like', "%$search%");
+            });
+        }
+        if ($request->filled('course')) {
+            $query->where('course', $request->input('course'));
+        }
+        if ($request->filled('year')) {
+            $query->where('year_level', $request->input('year'));
+        }
+
+        $students = $query->latest()->paginate(10)->withQueryString();
+
+        return view('students.index', compact('students', 'courses', 'years'));
     }
 
     /**
@@ -63,6 +85,7 @@ class StudentController extends Controller
     public function show(Student $student, Request $request): View
     {
         $attendancesQuery = $student->attendances()->orderBy('date', 'desc');
+
         if ($request->filled('filter_date')) {
             $attendancesQuery->where('date', $request->input('filter_date'));
         } elseif ($request->filled('filter_month')) {
@@ -70,17 +93,27 @@ class StudentController extends Controller
             $attendancesQuery->whereYear('date', substr($month, 0, 4))
                 ->whereMonth('date', substr($month, 5, 2));
         }
-        $attendances = $attendancesQuery->get();
-        $total = $attendances->count();
-        $present = $attendances->where('status', 'present')->count();
-        $absent = $attendances->where('status', 'absent')->count();
+        
+        // Clone the query for summary calculations before pagination
+        $summaryQuery = clone $attendancesQuery;
+        $allAttendances = $summaryQuery->get();
+
+        $total = $allAttendances->count();
+        $present = $allAttendances->where('status', 'present')->count();
+        $absent = $allAttendances->where('status', 'absent')->count();
+        
         $percentage = $total > 0 ? round(($present / $total) * 100, 2) : 0;
+        
         $attendanceSummary = [
             'total' => $total,
             'present' => $present,
             'absent' => $absent,
             'percentage' => $percentage,
         ];
+
+        // Paginate the results for display
+        $attendances = $attendancesQuery->paginate(10);
+
         return view('students.show', compact('student', 'attendances', 'attendanceSummary'));
     }
 
@@ -89,18 +122,7 @@ class StudentController extends Controller
      */
     public function edit(Student $student): View
     {
-        $courses = [
-            'Computer Science',
-            'Mathematics',
-            'Physics',
-            'Chemistry',
-            'Biology',
-            'Engineering',
-            'Business Administration',
-            'Psychology',
-            'History',
-            'English Literature',
-        ];
+        $courses = ['Engineering', 'Information Technology', 'Business Administration', 'Education', 'Arts and Sciences'];
         return view('students.edit', compact('student', 'courses'));
     }
 
