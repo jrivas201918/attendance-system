@@ -8,7 +8,10 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     zip \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip pdo_mysql
 
 # Install Composer globally
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -18,6 +21,9 @@ WORKDIR /app
 
 # Copy all project files into the container
 COPY . .
+
+# Copy .env.example to .env if .env does not exist
+RUN cp .env.example .env
 
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
