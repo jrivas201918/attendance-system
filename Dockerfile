@@ -16,6 +16,10 @@ RUN apt-get update && apt-get install -y \
 # Install Composer globally
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Install Node.js and npm if not already present
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
 # Set the working directory
 WORKDIR /app
 
@@ -27,6 +31,10 @@ RUN cp .env.example .env
 
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Install Node dependencies and build assets
+RUN npm install
+RUN npm run build
 
 # Generate Laravel app key (will fail if .env is missing, so make sure it's there)
 RUN php artisan key:generate || true
