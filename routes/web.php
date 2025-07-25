@@ -3,13 +3,33 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $lastLogin = auth()->user()->last_login_at;
+
+    $apiKey = '2e252882b36a22d5a6590224cbcd6244';
+    $city = 'Manila';
+    $weather = null;
+
+    try {
+        $response = Http::get("https://api.openweathermap.org/data/2.5/weather", [
+            'q' => $city,
+            'appid' => $apiKey,
+            'units' => 'metric'
+        ]);
+        if ($response->successful()) {
+            $weather = $response->json();
+        }
+    } catch (\Exception $e) {
+        $weather = null;
+    }
+
+    return view('dashboard', compact('lastLogin', 'weather'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

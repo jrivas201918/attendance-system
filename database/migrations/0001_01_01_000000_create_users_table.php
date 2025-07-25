@@ -35,10 +35,6 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-
-        Schema::table('students', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        });
     }
 
     /**

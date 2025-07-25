@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->date('date');
-            $table->string('status'); // e.g., 'present' or 'absent'
+            $table->string('status');
             $table->timestamps();
         });
     }

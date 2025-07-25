@@ -15,6 +15,7 @@ class Student extends Model
         'email',
         'course',
         'year_level',
+        'user_id', // <-- Add this line!
     ];
 
     protected $casts = [

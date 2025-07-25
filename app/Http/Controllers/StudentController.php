@@ -19,7 +19,7 @@ class StudentController extends Controller
         $years = Student::query()->select('year_level')->distinct()->pluck('year_level')->filter()->sort()->values();
 
         // Build the query for filtering/search
-        $query = Student::query();
+        $query = Student::query()->where('user_id', auth()->id());
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -73,7 +73,14 @@ class StudentController extends Controller
             'year_level' => 'required|integer|min:1|max:10',
         ]);
 
-        Student::create($validated);
+        Student::create([
+            'student_id' => $request->student_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'course' => $request->course,
+            'year_level' => $request->year_level,
+            'user_id' => auth()->id(), // This line is critical!
+        ]);
 
         return redirect()->route('students.index')
             ->with('success', 'Student created successfully.');
@@ -84,6 +91,10 @@ class StudentController extends Controller
      */
     public function show(Student $student, Request $request): View
     {
+        if ($student->user_id !== auth()->id()) {
+            abort(403); // Forbidden
+        }
+
         $attendancesQuery = $student->attendances()->orderBy('date', 'desc');
 
         if ($request->filled('filter_date')) {
@@ -122,6 +133,10 @@ class StudentController extends Controller
      */
     public function edit(Student $student): View
     {
+        if ($student->user_id !== auth()->id()) {
+            abort(403); // Forbidden
+        }
+
         $courses = ['Engineering', 'Information Technology', 'Business Administration', 'Education', 'Arts and Sciences'];
         return view('students.edit', compact('student', 'courses'));
     }
@@ -131,6 +146,10 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student): RedirectResponse
     {
+        if ($student->user_id !== auth()->id()) {
+            abort(403); // Forbidden
+        }
+
         $validated = $request->validate([
             'student_id' => 'required|string|max:255|unique:students,student_id,' . $student->id,
             'name' => 'required|string|max:255',
@@ -150,6 +169,10 @@ class StudentController extends Controller
      */
     public function destroy(Student $student): RedirectResponse
     {
+        if ($student->user_id !== auth()->id()) {
+            abort(403); // Forbidden
+        }
+
         $student->delete();
 
         return redirect()->route('students.index')
