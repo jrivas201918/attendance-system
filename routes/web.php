@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -47,6 +48,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/attendance/{attendance}', [\App\Http\Controllers\AttendanceController::class, 'update'])->name('attendance.update');
     Route::delete('/attendance/{attendance}', [\App\Http\Controllers\AttendanceController::class, 'destroy'])->name('attendance.destroy');
     Route::get('/attendance/export/{student}', [\App\Http\Controllers\AttendanceController::class, 'export'])->name('attendance.export');
+});
+
+Route::get('/test-email', function () {
+    Mail::raw('This is a test email from Laravel!', function ($message) {
+        $message->to('joshuarivas19990820@gmail.com')
+                ->subject('Test Email');
+    });
+    return 'Email sent!';
 });
 
 require __DIR__.'/auth.php';
