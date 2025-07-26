@@ -58,4 +58,14 @@ Route::get('/test-email', function () {
     return 'Email sent!';
 });
 
+// Temporary debug route - REMOVE AFTER DEBUGGING
+Route::get('/view-logs', function () {
+    $logFile = storage_path('logs/laravel.log');
+    if (file_exists($logFile)) {
+        return response()->file($logFile);
+    } else {
+        return "Log file not found.";
+    }
+});
+
 require __DIR__.'/auth.php';
