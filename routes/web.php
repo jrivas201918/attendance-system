@@ -50,22 +50,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/export/{student}', [\App\Http\Controllers\AttendanceController::class, 'export'])->name('attendance.export');
 });
 
-Route::get('/test-email', function () {
-    Mail::raw('This is a test email from Laravel!', function ($message) {
-        $message->to('joshuarivas19990820@gmail.com')
-                ->subject('Test Email');
-    });
-    return 'Email sent!';
-});
-
-// Temporary debug route - REMOVE AFTER DEBUGGING
-Route::get('/view-logs', function () {
-    $logFile = storage_path('logs/laravel.log');
-    if (file_exists($logFile)) {
-        return response()->file($logFile);
-    } else {
-        return "Log file not found.";
-    }
-});
-
 require __DIR__.'/auth.php';
