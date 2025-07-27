@@ -83,7 +83,7 @@ class StudentController extends Controller
         ]);
 
         return redirect()->route('students.index')
-            ->with('success', 'Student created successfully.');
+            ->with('success', 'Student created successfully! 🎉');
     }
 
     /**
@@ -161,7 +161,7 @@ class StudentController extends Controller
         $student->update($validated);
 
         return redirect()->route('students.index')
-            ->with('success', 'Student updated successfully.');
+            ->with('success', 'Student updated successfully! ✏️');
     }
 
     /**
@@ -176,6 +176,6 @@ class StudentController extends Controller
         $student->delete();
 
         return redirect()->route('students.index')
-            ->with('success', 'Student deleted successfully.');
+            ->with('success', 'Student deleted successfully! 🗑️');
     }
 }
