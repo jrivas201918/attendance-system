@@ -30,30 +30,32 @@ class TeacherAnalyticsController extends Controller
 
         // Bar chart: daily attendance for this teacher's students (current month)
         $studentIds = Student::where('user_id', $user->id)->pluck('id');
-        $currentMonth = now()->format('Y-m');
-        $dailyAttendance = DB::table('attendances')
-            ->select(
-                DB::raw('DATE(date) as date'),
-                DB::raw('status'),
-                DB::raw('count(*) as count')
-            )
-            ->whereIn('student_id', $studentIds)
-            ->where('date', 'like', $currentMonth . '%')
-            ->groupBy('date', 'status')
-            ->orderBy('date')
-            ->get();
-
-        // Process daily attendance data
         $dates = [];
         $presentData = [];
         $absentData = [];
-        $uniqueDates = $dailyAttendance->pluck('date')->unique()->sort();
-        foreach ($uniqueDates as $date) {
-            $dates[] = date('M d', strtotime($date));
-            $presentCount = $dailyAttendance->where('date', $date)->where('status', 'present')->first()->count ?? 0;
-            $absentCount = $dailyAttendance->where('date', $date)->where('status', 'absent')->first()->count ?? 0;
-            $presentData[] = $presentCount;
-            $absentData[] = $absentCount;
+
+        if ($studentIds->count() > 0) {
+            $currentMonth = now()->format('Y-m');
+            $dailyAttendance = DB::table('attendances')
+                ->select(
+                    DB::raw('DATE(date) as date'),
+                    DB::raw('status'),
+                    DB::raw('count(*) as count')
+                )
+                ->whereIn('student_id', $studentIds)
+                ->where('date', 'like', $currentMonth . '%')
+                ->groupBy('date', 'status')
+                ->orderBy('date')
+                ->get();
+
+            $uniqueDates = $dailyAttendance->pluck('date')->unique()->sort();
+            foreach ($uniqueDates as $date) {
+                $dates[] = date('M d', strtotime($date));
+                $presentCount = optional($dailyAttendance->where('date', $date)->where('status', 'present')->first())->count ?? 0;
+                $absentCount = optional($dailyAttendance->where('date', $date)->where('status', 'absent')->first())->count ?? 0;
+                $presentData[] = $presentCount;
+                $absentData[] = $absentCount;
+            }
         }
 
         $chartData = [
