@@ -105,3 +105,36 @@ Route::get('/simple-admin-test', function () {
         'view_exists' => view()->exists('admin.dashboard')
     ];
 });
+
+Route::get('/test-database', function () {
+    try {
+        // Test database connection
+        DB::connection()->getPdo();
+        
+        // Check if users table has role column
+        $hasRoleColumn = Schema::hasColumn('users', 'role');
+        
+        // Get user count
+        $userCount = User::count();
+        
+        // Get current user from database
+        $currentUser = auth()->user();
+        $dbUser = null;
+        if ($currentUser) {
+            $dbUser = User::find($currentUser->id);
+        }
+        
+        return [
+            'database_connected' => true,
+            'has_role_column' => $hasRoleColumn,
+            'user_count' => $userCount,
+            'current_user_role' => $dbUser ? $dbUser->role : 'not found',
+            'current_user_is_admin' => $dbUser ? $dbUser->isAdmin() : false
+        ];
+    } catch (Exception $e) {
+        return [
+            'error' => $e->getMessage(),
+            'database_connected' => false
+        ];
+    }
+});
