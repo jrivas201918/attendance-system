@@ -52,26 +52,32 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/debug', function () {
-    return [
-        'mail_mailer' => env('MAIL_MAILER'),
-        'mail_host' => env('MAIL_HOST'),
-        'mail_port' => env('MAIL_PORT'),
-        'mail_username' => env('MAIL_USERNAME'),
-        'mail_password_set' => !empty(env('MAIL_PASSWORD')),
-        'mail_from_address' => env('MAIL_FROM_ADDRESS'),
-        'mail_from_name' => env('MAIL_FROM_NAME'),
-        'app_debug' => env('APP_DEBUG'),
-    ];
+Route::get('/check-user/{email}', function ($email) {
+    $user = \App\Models\User::where('email', $email)->first();
+    if ($user) {
+        return [
+            'exists' => true,
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'created_at' => $user->created_at
+        ];
+    } else {
+        return [
+            'exists' => false,
+            'message' => 'User not found'
+        ];
+    }
 });
 
-Route::get('/test-email', function () {
+Route::get('/test-reset/{email}', function ($email) {
     try {
-        Mail::raw('This is a test email from Laravel!', function ($message) {
-            $message->to('joshuarivas19990820@gmail.com')
-                    ->subject('Test Email');
-        });
-        return 'Email sent successfully!';
+        $user = \App\Models\User::where('email', $email)->first();
+        if (!$user) {
+            return ['error' => 'User not found'];
+        }
+        
+        \Illuminate\Support\Facades\Password::sendResetLink(['email' => $email]);
+        return ['success' => 'Password reset link sent to ' . $email];
     } catch (\Exception $e) {
         return [
             'error' => $e->getMessage(),
@@ -79,10 +85,4 @@ Route::get('/test-email', function () {
             'line' => $e->getLine()
         ];
     }
-});
-
-Route::get('/clear-cache', function () {
-    \Artisan::call('config:clear');
-    \Artisan::call('cache:clear');
-    return 'Cache cleared! Environment variables should reload.';
 });
