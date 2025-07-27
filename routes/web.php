@@ -161,3 +161,62 @@ Route::get('/test-database', function () {
         ];
     }
 });
+
+Route::get('/debug-teacher-analytics', function () {
+    try {
+        $user = auth()->user();
+        if (!$user) {
+            return 'Not logged in!';
+        }
+        if (!$user->isTeacher()) {
+            return 'Not a teacher!';
+        }
+
+        // Copy the logic from TeacherAnalyticsController@index here:
+        $courseDistribution = \DB::table('students')
+            ->select('course', \DB::raw('count(*) as student_count'))
+            ->where('user_id', $user->id)
+            ->groupBy('course')
+            ->get();
+
+        $studentIds = \App\Models\Student::where('user_id', $user->id)->pluck('id');
+        $dates = [];
+        $presentData = [];
+        $absentData = [];
+
+        if ($studentIds->count() > 0) {
+            $currentMonth = now()->format('Y-m');
+            $dailyAttendance = \DB::table('attendances')
+                ->select(
+                    \DB::raw('DATE(date) as date'),
+                    \DB::raw('status'),
+                    \DB::raw('count(*) as count')
+                )
+                ->whereIn('student_id', $studentIds)
+                ->where('date', 'like', $currentMonth . '%')
+                ->groupBy('date', 'status')
+                ->orderBy('date')
+                ->get();
+
+            $uniqueDates = $dailyAttendance->pluck('date')->unique()->sort();
+            foreach ($uniqueDates as $date) {
+                $dates[] = date('M d', strtotime($date));
+                $presentCount = optional($dailyAttendance->where('date', $date)->where('status', 'present')->first())->count ?? 0;
+                $absentCount = optional($dailyAttendance->where('date', $date)->where('status', 'absent')->first())->count ?? 0;
+                $presentData[] = $presentCount;
+                $absentData[] = $absentCount;
+            }
+        }
+
+        return [
+            'courseDistribution' => $courseDistribution,
+            'dailyAttendance' => [
+                'dates' => $dates,
+                'present' => $presentData,
+                'absent' => $absentData
+            ]
+        ];
+    } catch (\Throwable $e) {
+        return response('<pre>' . e($e) . '</pre>', 500);
+    }
+});
