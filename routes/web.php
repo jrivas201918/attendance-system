@@ -94,6 +94,27 @@ Route::get('/test-admin-controller', function () {
     }
 });
 
+Route::get('/simple-admin-dashboard', function () {
+    try {
+        // Simple admin dashboard without complex queries
+        $totalUsers = \App\Models\User::count();
+        $totalStudents = \App\Models\Student::count();
+        
+        return view('admin.dashboard', [
+            'totalUsers' => $totalUsers,
+            'totalStudents' => $totalStudents,
+            'totalAttendanceRecords' => 0,
+            'monthlyAttendance' => 0,
+            'attendanceByCourse' => collect(),
+            'recentStudents' => collect(),
+            'recentAttendance' => collect(),
+            'attendanceRate' => 0
+        ]);
+    } catch (Exception $e) {
+        return ['error' => 'Simple admin dashboard error: ' . $e->getMessage()];
+    }
+})->middleware('admin');
+
 Route::get('/simple-admin-test', function () {
     return [
         'auth_check' => auth()->check(),
