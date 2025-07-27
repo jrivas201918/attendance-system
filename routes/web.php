@@ -287,3 +287,19 @@ Route::get('/test-teacher-view', function () {
         return response('<pre>' . e($e) . '</pre>', 500);
     }
 });
+
+Route::get('/auth-test', function () {
+    return [
+        'logged_in' => auth()->check(),
+        'user' => auth()->user() ? [
+            'id' => auth()->user()->id,
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+            'role' => auth()->user()->role,
+            'is_teacher' => auth()->user()->isTeacher(),
+            'is_admin' => auth()->user()->isAdmin()
+        ] : null,
+        'session_id' => session()->getId(),
+        'csrf_token' => csrf_token()
+    ];
+});
