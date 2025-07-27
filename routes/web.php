@@ -51,11 +51,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('/test-email', function () {
-    Mail::raw('This is a test email from Laravel!', function ($message) {
-        $message->to('joshuarivas19990820@gmail.com')
-                ->subject('Test Email');
-    });
-    return 'Email sent!';
-});
