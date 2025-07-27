@@ -109,19 +109,19 @@ Route::get('/simple-admin-test', function () {
 Route::get('/test-database', function () {
     try {
         // Test database connection
-        DB::connection()->getPdo();
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
         
         // Check if users table has role column
-        $hasRoleColumn = Schema::hasColumn('users', 'role');
+        $hasRoleColumn = \Illuminate\Support\Facades\Schema::hasColumn('users', 'role');
         
         // Get user count
-        $userCount = User::count();
+        $userCount = \App\Models\User::count();
         
         // Get current user from database
         $currentUser = auth()->user();
         $dbUser = null;
         if ($currentUser) {
-            $dbUser = User::find($currentUser->id);
+            $dbUser = \App\Models\User::find($currentUser->id);
         }
         
         return [
