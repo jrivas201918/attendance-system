@@ -58,7 +58,9 @@ Route::get('/debug', function () {
         'mail_host' => env('MAIL_HOST'),
         'mail_port' => env('MAIL_PORT'),
         'mail_username' => env('MAIL_USERNAME'),
+        'mail_password_set' => !empty(env('MAIL_PASSWORD')),
         'mail_from_address' => env('MAIL_FROM_ADDRESS'),
+        'mail_from_name' => env('MAIL_FROM_NAME'),
         'app_debug' => env('APP_DEBUG'),
     ];
 });
