@@ -58,6 +58,9 @@ class AdminController extends Controller
             $totalPossibleAttendance = $totalStudents * 30; // Assuming 30 days
             $attendanceRate = $totalPossibleAttendance > 0 ? round(($totalAttendanceRecords / $totalPossibleAttendance) * 100, 2) : 0;
             
+            // Get chart data
+            $chartData = $this->getChartData();
+            
             return view('admin.dashboard', compact(
                 'totalUsers',
                 'totalStudents', 
@@ -66,7 +69,8 @@ class AdminController extends Controller
                 'attendanceByCourse',
                 'recentStudents',
                 'recentAttendance',
-                'attendanceRate'
+                'attendanceRate',
+                'chartData'
             ));
         } catch (\Exception $e) {
             // Fallback to simple dashboard
@@ -78,7 +82,8 @@ class AdminController extends Controller
                 'attendanceByCourse' => collect(),
                 'recentStudents' => collect(),
                 'recentAttendance' => collect(),
-                'attendanceRate' => 0
+                'attendanceRate' => 0,
+                'chartData' => $this->getChartData()
             ]);
         }
     }
@@ -134,6 +139,86 @@ class AdminController extends Controller
                 'monthlyTrends' => collect(),
                 'courseStats' => collect()
             ]);
+        }
+    }
+    
+    private function getChartData()
+    {
+        try {
+            // Get student distribution by course (for pie chart)
+            $courseDistribution = collect();
+            try {
+                $courseDistribution = DB::table('students')
+                    ->select('course', DB::raw('count(*) as student_count'))
+                    ->groupBy('course')
+                    ->get();
+            } catch (\Exception $e) {
+                $courseDistribution = collect();
+            }
+            
+            // Get daily attendance data for current month (for bar chart)
+            $dailyAttendance = collect();
+            try {
+                $currentMonth = now()->format('Y-m');
+                $dailyAttendance = DB::table('attendances')
+                    ->select(
+                        DB::raw('DATE(created_at) as date'),
+                        DB::raw('status'),
+                        DB::raw('count(*) as count')
+                    )
+                    ->where('created_at', 'like', $currentMonth . '%')
+                    ->groupBy('date', 'status')
+                    ->orderBy('date')
+                    ->get();
+            } catch (\Exception $e) {
+                $dailyAttendance = collect();
+            }
+            
+            // Process daily attendance data
+            $processedDailyData = [];
+            $dates = [];
+            $presentData = [];
+            $absentData = [];
+            
+            if ($dailyAttendance->count() > 0) {
+                // Get unique dates
+                $uniqueDates = $dailyAttendance->pluck('date')->unique()->sort();
+                
+                foreach ($uniqueDates as $date) {
+                    $dates[] = date('M d', strtotime($date));
+                    
+                    $presentCount = $dailyAttendance
+                        ->where('date', $date)
+                        ->where('status', 'present')
+                        ->first()->count ?? 0;
+                    
+                    $absentCount = $dailyAttendance
+                        ->where('date', $date)
+                        ->where('status', 'absent')
+                        ->first()->count ?? 0;
+                    
+                    $presentData[] = $presentCount;
+                    $absentData[] = $absentCount;
+                }
+            }
+            
+            return [
+                'courseDistribution' => $courseDistribution,
+                'dailyAttendance' => [
+                    'dates' => $dates,
+                    'present' => $presentData,
+                    'absent' => $absentData
+                ]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'courseDistribution' => collect(),
+                'dailyAttendance' => [
+                    'dates' => [],
+                    'present' => [],
+                    'absent' => []
+                ]
+            ];
         }
     }
 } 

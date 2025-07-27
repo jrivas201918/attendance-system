@@ -78,7 +78,30 @@
                 </div>
             </div>
 
-            <!-- Charts and Recent Activities -->
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Student Distribution by Course (Pie Chart) -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Student Distribution by Course</h3>
+                        <div class="h-64">
+                            <canvas id="courseDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Attendance (Bar Chart) -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Daily Attendance This Month</h3>
+                        <div class="h-64">
+                            <canvas id="dailyAttendanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Attendance by Course -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -142,4 +165,135 @@
             </div>
         </div>
     </div>
+
+    <!-- Chart Scripts -->
+    <script>
+        // Course Distribution Pie Chart
+        const courseCtx = document.getElementById('courseDistributionChart').getContext('2d');
+        const courseData = @json($chartData['courseDistribution']);
+        
+        if (courseData.length > 0) {
+            new Chart(courseCtx, {
+                type: 'pie',
+                data: {
+                    labels: courseData.map(item => item.course),
+                    datasets: [{
+                        data: courseData.map(item => item.student_count),
+                        backgroundColor: [
+                            '#3B82F6', // Blue
+                            '#10B981', // Green
+                            '#F59E0B', // Yellow
+                            '#EF4444', // Red
+                            '#8B5CF6', // Purple
+                            '#06B6D4', // Cyan
+                            '#F97316', // Orange
+                            '#EC4899'  // Pink
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return `${context.label}: ${context.parsed} students (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            // Show "No data" message
+            courseCtx.font = '16px Arial';
+            courseCtx.fillStyle = '#9CA3AF';
+            courseCtx.textAlign = 'center';
+            courseCtx.fillText('No course data available', courseCtx.canvas.width / 2, courseCtx.canvas.height / 2);
+        }
+
+        // Daily Attendance Bar Chart
+        const attendanceCtx = document.getElementById('dailyAttendanceChart').getContext('2d');
+        const attendanceData = @json($chartData['dailyAttendance']);
+        
+        if (attendanceData.dates.length > 0) {
+            new Chart(attendanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: attendanceData.dates,
+                    datasets: [
+                        {
+                            label: 'Present',
+                            data: attendanceData.present,
+                            backgroundColor: '#10B981',
+                            borderColor: '#059669',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Absent',
+                            data: attendanceData.absent,
+                            backgroundColor: '#EF4444',
+                            borderColor: '#DC2626',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterBody: function(context) {
+                                    const present = context[0].dataset.data[context[0].dataIndex];
+                                    const absent = context[1].dataset.data[context[1].dataIndex];
+                                    const total = present + absent;
+                                    return `Total: ${total} students`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            // Show "No data" message
+            attendanceCtx.font = '16px Arial';
+            attendanceCtx.fillStyle = '#9CA3AF';
+            attendanceCtx.textAlign = 'center';
+            attendanceCtx.fillText('No attendance data available', attendanceCtx.canvas.width / 2, attendanceCtx.canvas.height / 2);
+        }
+    </script>
 </x-app-layout> 
