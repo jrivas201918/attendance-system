@@ -58,3 +58,17 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/debug-admin', function () {
+    return [
+        'user' => auth()->user() ? [
+            'id' => auth()->user()->id,
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+            'role' => auth()->user()->role,
+            'is_admin' => auth()->user()->isAdmin()
+        ] : 'Not logged in',
+        'admin_middleware_exists' => class_exists(\App\Http\Middleware\AdminMiddleware::class),
+        'admin_controller_exists' => class_exists(\App\Http\Controllers\AdminController::class)
+    ];
+});
