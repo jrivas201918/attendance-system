@@ -72,3 +72,15 @@ Route::get('/debug-admin', function () {
         'admin_controller_exists' => class_exists(\App\Http\Controllers\AdminController::class)
     ];
 });
+
+Route::get('/test-admin', function () {
+    if (!auth()->check()) {
+        return ['error' => 'Not logged in'];
+    }
+    
+    if (!auth()->user()->isAdmin()) {
+        return ['error' => 'Not admin'];
+    }
+    
+    return ['success' => 'Admin access confirmed!'];
+})->middleware('admin');
