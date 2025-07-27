@@ -64,3 +64,19 @@ Route::get('/debug', function () {
         'app_debug' => env('APP_DEBUG'),
     ];
 });
+
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('This is a test email from Laravel!', function ($message) {
+            $message->to('joshuarivas19990820@gmail.com')
+                    ->subject('Test Email');
+        });
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        return [
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ];
+    }
+});
