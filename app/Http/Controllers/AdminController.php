@@ -12,8 +12,9 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('admin');
+        // Remove middleware from constructor since it's applied in routes
+        // $this->middleware('auth');
+        // $this->middleware('admin');
     }
 
     public function dashboard()
