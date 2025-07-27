@@ -220,3 +220,49 @@ Route::get('/debug-teacher-analytics', function () {
         return response('<pre>' . e($e) . '</pre>', 500);
     }
 });
+
+Route::get('/test-teacher-analytics', function () {
+    try {
+        // Test if controller can be instantiated
+        $controller = new \App\Http\Controllers\TeacherAnalyticsController();
+        
+        // Test if view exists
+        $viewExists = view()->exists('teacher.analytics');
+        
+        // Test if user is logged in and is teacher
+        $user = auth()->user();
+        $isTeacher = $user ? $user->isTeacher() : false;
+        
+        return [
+            'controller_exists' => true,
+            'view_exists' => $viewExists,
+            'user_logged_in' => $user ? true : false,
+            'is_teacher' => $isTeacher,
+            'user_role' => $user ? $user->role : 'not logged in'
+        ];
+    } catch (Exception $e) {
+        return [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ];
+    }
+});
+
+Route::get('/test-teacher-view', function () {
+    try {
+        $chartData = [
+            'courseDistribution' => [
+                ['course' => 'Engineering', 'student_count' => 1]
+            ],
+            'dailyAttendance' => [
+                'dates' => [],
+                'present' => [],
+                'absent' => []
+            ]
+        ];
+        
+        return view('teacher.analytics', compact('chartData'));
+    } catch (Exception $e) {
+        return response('<pre>' . e($e) . '</pre>', 500);
+    }
+});
