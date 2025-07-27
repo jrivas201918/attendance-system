@@ -51,38 +51,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-Route::get('/check-user/{email}', function ($email) {
-    $user = \App\Models\User::where('email', $email)->first();
-    if ($user) {
-        return [
-            'exists' => true,
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'created_at' => $user->created_at
-        ];
-    } else {
-        return [
-            'exists' => false,
-            'message' => 'User not found'
-        ];
-    }
-});
-
-Route::get('/test-reset/{email}', function ($email) {
-    try {
-        $user = \App\Models\User::where('email', $email)->first();
-        if (!$user) {
-            return ['error' => 'User not found'];
-        }
-        
-        \Illuminate\Support\Facades\Password::sendResetLink(['email' => $email]);
-        return ['success' => 'Password reset link sent to ' . $email];
-    } catch (\Exception $e) {
-        return [
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ];
-    }
-});
