@@ -93,3 +93,15 @@ Route::get('/test-admin-controller', function () {
         return ['error' => 'AdminController error: ' . $e->getMessage()];
     }
 });
+
+Route::get('/simple-admin-test', function () {
+    return [
+        'auth_check' => auth()->check(),
+        'user_exists' => auth()->user() ? 'yes' : 'no',
+        'is_admin' => auth()->user() ? auth()->user()->isAdmin() : 'no user',
+        'role' => auth()->user() ? auth()->user()->role : 'no user',
+        'middleware_exists' => class_exists(\App\Http\Middleware\AdminMiddleware::class),
+        'controller_exists' => class_exists(\App\Http\Controllers\AdminController::class),
+        'view_exists' => view()->exists('admin.dashboard')
+    ];
+});
