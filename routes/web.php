@@ -303,3 +303,21 @@ Route::get('/auth-test', function () {
         'csrf_token' => csrf_token()
     ];
 });
+
+Route::get('/test-controller-method', function () {
+    try {
+        // Create controller instance manually
+        $controller = new \App\Http\Controllers\TeacherAnalyticsController();
+        
+        // Call the index method directly
+        return $controller->index();
+        
+    } catch (\Throwable $e) {
+        return response([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+})->middleware('auth');
