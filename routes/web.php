@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('admin.users');
         Route::get('/admin/statistics', [\App\Http\Controllers\AdminController::class, 'statistics'])->name('admin.statistics');
     });
+
+    Route::get('/teacher/analytics', [\App\Http\Controllers\TeacherAnalyticsController::class, 'index'])->name('teacher.analytics');
 });
 
 require __DIR__.'/auth.php';
