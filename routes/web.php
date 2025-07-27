@@ -223,18 +223,39 @@ Route::get('/debug-teacher-analytics', function () {
 
 Route::get('/test-teacher-analytics', function () {
     try {
-        // Test if controller can be instantiated
-        $controller = new \App\Http\Controllers\TeacherAnalyticsController();
+        // Step 1: Check if base Controller exists
+        $baseControllerExists = class_exists(\App\Http\Controllers\Controller::class);
         
-        // Test if view exists
+        // Step 2: Check if TeacherAnalyticsController class exists
+        $teacherControllerExists = class_exists(\App\Http\Controllers\TeacherAnalyticsController::class);
+        
+        // Step 3: Check if required models exist
+        $studentModelExists = class_exists(\App\Models\Student::class);
+        $attendanceModelExists = class_exists(\App\Models\Attendance::class);
+        
+        // Step 4: Try to instantiate the controller
+        $controller = null;
+        $instantiationError = null;
+        try {
+            $controller = new \App\Http\Controllers\TeacherAnalyticsController();
+        } catch (Exception $e) {
+            $instantiationError = $e->getMessage();
+        }
+        
+        // Step 5: Check if view exists
         $viewExists = view()->exists('teacher.analytics');
         
-        // Test if user is logged in and is teacher
+        // Step 6: Check user status
         $user = auth()->user();
         $isTeacher = $user ? $user->isTeacher() : false;
         
         return [
-            'controller_exists' => true,
+            'base_controller_exists' => $baseControllerExists,
+            'teacher_controller_exists' => $teacherControllerExists,
+            'student_model_exists' => $studentModelExists,
+            'attendance_model_exists' => $attendanceModelExists,
+            'controller_instantiated' => $controller !== null,
+            'instantiation_error' => $instantiationError,
             'view_exists' => $viewExists,
             'user_logged_in' => $user ? true : false,
             'is_teacher' => $isTeacher,
