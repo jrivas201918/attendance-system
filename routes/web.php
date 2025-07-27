@@ -51,3 +51,14 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/debug', function () {
+    return [
+        'mail_mailer' => env('MAIL_MAILER'),
+        'mail_host' => env('MAIL_HOST'),
+        'mail_port' => env('MAIL_PORT'),
+        'mail_username' => env('MAIL_USERNAME'),
+        'mail_from_address' => env('MAIL_FROM_ADDRESS'),
+        'app_debug' => env('APP_DEBUG'),
+    ];
+});
