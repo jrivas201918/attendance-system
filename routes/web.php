@@ -84,3 +84,12 @@ Route::get('/test-admin', function () {
     
     return ['success' => 'Admin access confirmed!'];
 })->middleware('admin');
+
+Route::get('/test-admin-controller', function () {
+    try {
+        $controller = new \App\Http\Controllers\AdminController();
+        return ['success' => 'AdminController exists and can be instantiated'];
+    } catch (Exception $e) {
+        return ['error' => 'AdminController error: ' . $e->getMessage()];
+    }
+});
