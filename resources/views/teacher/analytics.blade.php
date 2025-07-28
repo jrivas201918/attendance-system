@@ -117,6 +117,12 @@
                             title: {
                                 display: true,
                                 text: 'Number of Students'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return Math.floor(value) === value ? value : '';
+                                }
                             }
                         },
                         x: {
