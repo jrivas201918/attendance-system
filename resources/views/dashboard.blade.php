@@ -7,39 +7,242 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <!-- You're logged in message -->
-                    <div class="mb-4">
-                        You're logged in!
+            <!-- Welcome Card -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg mb-8">
+                <div class="p-8 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2">👋 Welcome back, {{ Auth::user()->name }}!</h1>
+                            <p class="text-indigo-100 text-lg">{{ now()->format('l, F j, Y') }} | {{ now()->format('g:i A') }}</p>
+                            <p class="text-indigo-100 mt-2">Here's your system overview for today...</p>
+                            
+                            <!-- Last Logout info -->
+                            @php
+                                $lastLogout = auth()->user()->last_logout_at;
+                            @endphp
+                            @if($lastLogout)
+                                <p class="text-indigo-100 mt-2 text-sm">
+                                    📅 Last Logout: {{ \Carbon\Carbon::parse($lastLogout)->timezone('Asia/Manila')->format('F j, Y g:i A') }}
+                                </p>
+                            @endif
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                <span class="text-3xl font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Last Logout info -->
-                    <span class="font-semibold">Last Logout:</span>
-                    <span>
-                        @php
-                            $lastLogout = auth()->user()->last_logout_at;
-                        @endphp
-                        {{ $lastLogout 
-                            ? \Carbon\Carbon::parse($lastLogout)->timezone('Asia/Manila')->format('F j, Y g:i A') 
-                            : 'No logout record' }}
-                    </span>
-                    <!-- Weather Info -->
-                    @if(isset($weather))
-                        <div class="mb-4">
-                            <span class="font-semibold">Weather in {{ $weather['name'] }}:</span>
-                            <span>
-                                {{ $weather['weather'][0]['main'] }} ({{ $weather['weather'][0]['description'] }}),
-                                {{ round($weather['main']['temp']) }}°C
-                            </span>
-                        </div>
-                    @else
-                        <div class="mb-4">
-                            <span class="font-semibold">Weather:</span>
-                            <span>Unable to fetch weather data.</span>
-                        </div>
-                    @endif
                 </div>
             </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                @if(auth()->user()->isTeacher())
+                    <a href="{{ route('students.index') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">My Students</p>
+                                <p class="text-xs text-gray-500">Manage students</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('attendance.create') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">Mark Attendance</p>
+                                <p class="text-xs text-gray-500">Record today</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('teacher.analytics') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-purple-100 rounded-lg">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">My Analytics</p>
+                                <p class="text-xs text-gray-500">View reports</p>
+                            </div>
+                        </div>
+                    </a>
+                @endif
+
+                @if(auth()->user()->isAdmin())
+                    <a href="{{ route('admin.users') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">Manage Teachers</p>
+                                <p class="text-xs text-gray-500">User management</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('admin.statistics') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">View Statistics</p>
+                                <p class="text-xs text-gray-500">System reports</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="{{ route('admin.dashboard') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-yellow-100 rounded-lg">
+                                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-900">Admin Dashboard</p>
+                                <p class="text-xs text-gray-500">Full overview</p>
+                            </div>
+                        </div>
+                    </a>
+                @endif
+
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-gray-100 rounded-lg">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-900">Profile</p>
+                            <p class="text-xs text-gray-500">Account settings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather and System Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Weather Card -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🌤️ Weather Information</h3>
+                        @if(isset($weather))
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-900">{{ $weather['name'] }}</p>
+                                    <p class="text-sm text-gray-600">{{ $weather['weather'][0]['main'] }} ({{ $weather['weather'][0]['description'] }})</p>
+                                    <p class="text-2xl font-bold text-blue-600">{{ round($weather['main']['temp']) }}°C</p>
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-gray-500">Unable to fetch weather data</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">⚙️ System Status</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">System Status</span>
+                                <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Online</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Database</span>
+                                <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Connected</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Last Activity</span>
+                                <span class="text-xs text-gray-500">{{ now()->format('g:i A') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role-specific Content -->
+            @if(auth()->user()->isTeacher())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 Quick Access</h3>
+                        <p class="text-gray-600 mb-4">Welcome to your teaching dashboard! Use the quick action buttons above to manage your students, mark attendance, and view your analytics.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                                <div class="text-2xl mb-2">👥</div>
+                                <p class="text-sm font-medium text-gray-900">Manage Students</p>
+                                <p class="text-xs text-gray-500">Add, edit, and view your students</p>
+                            </div>
+                            <div class="text-center p-4 bg-green-50 rounded-lg">
+                                <div class="text-2xl mb-2">📝</div>
+                                <p class="text-sm font-medium text-gray-900">Mark Attendance</p>
+                                <p class="text-xs text-gray-500">Record daily attendance</p>
+                            </div>
+                            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                                <div class="text-2xl mb-2">📊</div>
+                                <p class="text-sm font-medium text-gray-900">View Analytics</p>
+                                <p class="text-xs text-gray-500">Track attendance trends</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if(auth()->user()->isAdmin())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🔧 Admin Overview</h3>
+                        <p class="text-gray-600 mb-4">Welcome to the admin dashboard! You have full control over the system. Use the quick action buttons above to manage teachers, view statistics, and access the full admin panel.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                                <div class="text-2xl mb-2">👨‍🏫</div>
+                                <p class="text-sm font-medium text-gray-900">Manage Teachers</p>
+                                <p class="text-xs text-gray-500">Add, edit, and manage teachers</p>
+                            </div>
+                            <div class="text-center p-4 bg-green-50 rounded-lg">
+                                <div class="text-2xl mb-2">📈</div>
+                                <p class="text-sm font-medium text-gray-900">View Statistics</p>
+                                <p class="text-xs text-gray-500">System-wide analytics</p>
+                            </div>
+                            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                                <div class="text-2xl mb-2">⚙️</div>
+                                <p class="text-sm font-medium text-gray-900">Admin Panel</p>
+                                <p class="text-xs text-gray-500">Full system control</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
