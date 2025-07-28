@@ -9,10 +9,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    @if(session('success'))
+                        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900">All Users</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">All Teachers</h3>
                         <div class="text-sm text-gray-600">
-                            Total: {{ $users->total() }} users
+                            Total: {{ $users->total() }} teachers
                         </div>
                     </div>
 
@@ -74,12 +80,16 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 @if($user->id !== auth()->id())
-                                                    <button class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                                    <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
                                                         Edit
-                                                    </button>
-                                                    <button class="text-red-600 hover:text-red-900">
-                                                        Delete
-                                                    </button>
+                                                    </a>
+                                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this teacher?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                                            Delete
+                                                        </button>
+                                                    </form>
                                                 @else
                                                     <span class="text-gray-400">Current User</span>
                                                 @endif

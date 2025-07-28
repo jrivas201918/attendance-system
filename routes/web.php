@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('admin.users');
+        Route::get('/admin/users/{user}/edit', [\App\Http\Controllers\AdminController::class, 'edit'])->name('admin.users.edit');
+        Route::put('/admin/users/{user}', [\App\Http\Controllers\AdminController::class, 'update'])->name('admin.users.update');
+        Route::delete('/admin/users/{user}', [\App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.users.destroy');
         Route::get('/admin/statistics', [\App\Http\Controllers\AdminController::class, 'statistics'])->name('admin.statistics');
     });
 

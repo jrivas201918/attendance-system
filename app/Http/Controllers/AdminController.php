@@ -88,14 +88,70 @@ class AdminController extends Controller
         }
     }
 
+    public function edit(User $user)
+    {
+        // Ensure only teachers can be edited
+        if ($user->role !== 'teacher') {
+            abort(403, 'Only teachers can be edited.');
+        }
+        
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        // Ensure only teachers can be updated
+        if ($user->role !== 'teacher') {
+            abort(403, 'Only teachers can be updated.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:teacher'
+        ]);
+
+        $user->update($request->only(['name', 'email', 'role']));
+
+        return redirect()->route('admin.users')->with('success', 'Teacher updated successfully.');
+    }
+
+    public function destroy(User $user)
+    {
+        // Ensure only teachers can be deleted
+        if ($user->role !== 'teacher') {
+            abort(403, 'Only teachers can be deleted.');
+        }
+
+        // Prevent deleting the current user
+        if ($user->id === auth()->id()) {
+            abort(403, 'You cannot delete your own account.');
+        }
+
+        // Delete associated students first
+        $user->students()->delete();
+        
+        // Delete the user
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'Teacher deleted successfully.');
+    }
+
     public function users()
     {
         try {
-            $users = User::latest()->paginate(10);
+            // Only show teachers, not admins, with student count
+            $users = User::where('role', 'teacher')
+                ->withCount('students')
+                ->latest()
+                ->paginate(10);
             return view('admin.users', compact('users'));
         } catch (\Exception $e) {
             // Fallback to simple user list
-            $users = User::latest()->get();
+            $users = User::where('role', 'teacher')
+                ->withCount('students')
+                ->latest()
+                ->get();
             return view('admin.users', compact('users'));
         }
     }
