@@ -126,7 +126,7 @@
                     </a>
                 @endif
 
-                <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <a href="{{ route('profile.edit') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
                     <div class="flex items-center">
                         <div class="p-2 bg-gray-100 rounded-lg">
                             <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@
                             <p class="text-xs text-gray-500">Account settings</p>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Weather and System Info -->

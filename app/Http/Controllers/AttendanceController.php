@@ -17,38 +17,67 @@ class AttendanceController extends Controller
     }
 
     /**
-     * Show the form for creating a new attendance record for a student.
+     * Show the form for creating attendance records for all students.
      */
     public function create(Request $request)
     {
-        $studentId = $request->query('student_id');
-        $student = Student::findOrFail($studentId);
-        return view('attendance.create', compact('student'));
+        // Get all students for the current teacher
+        $students = Student::where('user_id', auth()->id())->get();
+        
+        // Get today's date
+        $today = date('Y-m-d');
+        
+        // Get existing attendance records for today
+        $existingAttendance = Attendance::whereIn('student_id', $students->pluck('id'))
+            ->where('date', $today)
+            ->pluck('status', 'student_id')
+            ->toArray();
+        
+        return view('attendance.create', compact('students', 'today', 'existingAttendance'));
     }
 
     /**
-     * Store a newly created attendance record in storage.
+     * Store attendance records for multiple students.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'student_id' => 'required|exists:students,id',
             'date' => 'required|date',
-            'status' => 'required|in:present,absent',
+            'attendance' => 'required|array',
+            'attendance.*' => 'required|in:present,absent',
         ]);
 
-        // Prevent duplicate attendance for the same student and date
-        $exists = Attendance::where('student_id', $validated['student_id'])
-            ->where('date', $validated['date'])
-            ->exists();
-        if ($exists) {
-            return back()->withErrors(['date' => 'Attendance for this date already exists.'])->withInput();
+        $date = $validated['date'];
+        $attendanceData = $validated['attendance'];
+        
+        // Get all students for the current teacher
+        $students = Student::where('user_id', auth()->id())->pluck('id')->toArray();
+        
+        // Delete existing attendance records for today
+        Attendance::whereIn('student_id', $students)
+            ->where('date', $date)
+            ->delete();
+        
+        // Create new attendance records
+        $records = [];
+        foreach ($attendanceData as $studentId => $status) {
+            if (in_array($studentId, $students)) {
+                $records[] = [
+                    'student_id' => $studentId,
+                    'date' => $date,
+                    'status' => $status,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+        
+        if (!empty($records)) {
+            Attendance::insert($records);
         }
 
-        Attendance::create($validated);
-
-        return redirect()->route('students.show', $validated['student_id'])
-            ->with('success', 'Attendance marked successfully.');
+        return redirect()->route('attendance.create')
+            ->with('success', 'Attendance marked successfully for all students.');
     }
 
     /**
