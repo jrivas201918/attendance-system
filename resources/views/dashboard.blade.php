@@ -191,58 +191,7 @@
                 </div>
             </div>
 
-            <!-- Role-specific Content -->
-            @if(auth()->user()->isTeacher())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">📚 Quick Access</h3>
-                        <p class="text-gray-600 mb-4">Welcome to your teaching dashboard! Use the quick action buttons above to manage your students, mark attendance, and view your analytics.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                                <div class="text-2xl mb-2">👥</div>
-                                <p class="text-sm font-medium text-gray-900">Manage Students</p>
-                                <p class="text-xs text-gray-500">Add, edit, and view your students</p>
-                            </div>
-                            <div class="text-center p-4 bg-green-50 rounded-lg">
-                                <div class="text-2xl mb-2">📝</div>
-                                <p class="text-sm font-medium text-gray-900">Mark Attendance</p>
-                                <p class="text-xs text-gray-500">Record daily attendance</p>
-                            </div>
-                            <div class="text-center p-4 bg-purple-50 rounded-lg">
-                                <div class="text-2xl mb-2">📊</div>
-                                <p class="text-sm font-medium text-gray-900">View Analytics</p>
-                                <p class="text-xs text-gray-500">Track attendance trends</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
 
-            @if(auth()->user()->isAdmin())
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">🔧 Admin Overview</h3>
-                        <p class="text-gray-600 mb-4">Welcome to the admin dashboard! You have full control over the system. Use the quick action buttons above to manage teachers, view statistics, and access the full admin panel.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                                <div class="text-2xl mb-2">👨‍🏫</div>
-                                <p class="text-sm font-medium text-gray-900">Manage Teachers</p>
-                                <p class="text-xs text-gray-500">Add, edit, and manage teachers</p>
-                            </div>
-                            <div class="text-center p-4 bg-green-50 rounded-lg">
-                                <div class="text-2xl mb-2">📈</div>
-                                <p class="text-sm font-medium text-gray-900">View Statistics</p>
-                                <p class="text-xs text-gray-500">System-wide analytics</p>
-                            </div>
-                            <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                                <div class="text-2xl mb-2">⚙️</div>
-                                <p class="text-sm font-medium text-gray-900">Admin Panel</p>
-                                <p class="text-xs text-gray-500">Full system control</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 </x-app-layout>
