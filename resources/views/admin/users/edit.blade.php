@@ -40,6 +40,26 @@
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
                         </div>
 
+                        <!-- Password Change Section -->
+                        <div class="border-t pt-6">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">Change Password</h4>
+                            <p class="text-sm text-gray-600 mb-4">Leave blank if you don't want to change the password.</p>
+                            
+                            <!-- New Password -->
+                            <div>
+                                <x-input-label for="password" :value="__('New Password')" />
+                                <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" autocomplete="new-password" />
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mt-4">
+                                <x-input-label for="password_confirmation" :value="__('Confirm New Password')" />
+                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" autocomplete="new-password" />
+                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                            </div>
+                        </div>
+
                         <div class="flex items-center justify-end mt-4">
                             <a href="{{ route('admin.users') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 focus:bg-gray-400 active:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-3">
                                 Cancel

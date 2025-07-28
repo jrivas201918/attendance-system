@@ -12,6 +12,11 @@
                     @if(session('success'))
                         <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
                             {{ session('success') }}
+                            @if(str_contains(session('success'), 'Temporary password'))
+                                <div class="mt-2 text-sm">
+                                    <strong>Note:</strong> The temporary password follows the format: Temp[FirstLetter][Year]! (e.g., TempJ2024!)
+                                </div>
+                            @endif
                         </div>
                     @endif
                     
@@ -83,6 +88,12 @@
                                                     <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">
                                                         Edit
                                                     </a>
+                                                    <form method="POST" action="{{ route('admin.users.reset-password', $user) }}" class="inline" onsubmit="return confirm('This will generate a new temporary password. Continue?')">
+                                                        @csrf
+                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-900 mr-3">
+                                                            Reset Password
+                                                        </button>
+                                                    </form>
                                                     <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this teacher?')">
                                                         @csrf
                                                         @method('DELETE')

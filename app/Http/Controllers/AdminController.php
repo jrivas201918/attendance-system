@@ -108,12 +108,52 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:teacher'
+            'role' => 'required|in:teacher',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
+        // Update basic info
         $user->update($request->only(['name', 'email', 'role']));
 
-        return redirect()->route('admin.users')->with('success', 'Teacher updated successfully.');
+        // Update password if provided
+        if ($request->filled('password')) {
+            $user->update([
+                'password' => bcrypt($request->password)
+            ]);
+        }
+
+        $message = 'Teacher updated successfully.';
+        if ($request->filled('password')) {
+            $message .= ' Password has been changed.';
+        }
+
+        return redirect()->route('admin.users')->with('success', $message);
+    }
+
+    public function resetPassword(User $user)
+    {
+        // Ensure only teachers can have their password reset
+        if ($user->role !== 'teacher') {
+            abort(403, 'Only teachers can have their password reset.');
+        }
+
+        // Prevent resetting the current user's password
+        if ($user->id === auth()->id()) {
+            abort(403, 'You cannot reset your own password from this interface.');
+        }
+
+        // Generate a temporary password
+        $tempPassword = 'Temp' . strtoupper(substr($user->name, 0, 1)) . date('Y') . '!';
+        
+        // Update the user's password
+        $user->update([
+            'password' => bcrypt($tempPassword)
+        ]);
+
+        $message = "Password reset for {$user->name}. Temporary password: {$tempPassword}";
+        $message .= " (Please inform the teacher to change this password immediately)";
+
+        return redirect()->route('admin.users')->with('success', $message);
     }
 
     public function destroy(User $user)
