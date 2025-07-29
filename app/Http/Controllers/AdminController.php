@@ -298,6 +298,45 @@ class AdminController extends Controller
                 }
             }
             
+            // If no data for current month, try to get some sample data from the last 7 days
+            if (empty($dates)) {
+                try {
+                    $lastWeekData = DB::table('attendances')
+                        ->select(
+                            DB::raw('DATE(created_at) as date'),
+                            DB::raw('status'),
+                            DB::raw('count(*) as count')
+                        )
+                        ->where('created_at', '>=', now()->subDays(7))
+                        ->groupBy('date', 'status')
+                        ->orderBy('date')
+                        ->get();
+                    
+                    if ($lastWeekData->count() > 0) {
+                        $uniqueDates = $lastWeekData->pluck('date')->unique()->sort();
+                        
+                        foreach ($uniqueDates as $date) {
+                            $dates[] = date('M d', strtotime($date));
+                            
+                            $presentCount = $lastWeekData
+                                ->where('date', $date)
+                                ->where('status', 'present')
+                                ->first()->count ?? 0;
+                            
+                            $absentCount = $lastWeekData
+                                ->where('date', $date)
+                                ->where('status', 'absent')
+                                ->first()->count ?? 0;
+                            
+                            $presentData[] = $presentCount;
+                            $absentData[] = $absentCount;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // If this also fails, keep empty arrays
+                }
+            }
+            
             return [
                 'courseDistribution' => $courseDistribution,
                 'dailyAttendance' => [

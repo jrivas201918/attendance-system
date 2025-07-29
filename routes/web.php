@@ -95,6 +95,50 @@ Route::get('/test-admin', function () {
     return ['success' => 'Admin access confirmed!'];
 })->middleware('admin');
 
+Route::get('/debug-attendance', function () {
+    try {
+        $currentMonth = now()->format('Y-m');
+        $attendanceCount = \App\Models\Attendance::count();
+        $monthlyAttendance = \App\Models\Attendance::where('created_at', 'like', $currentMonth . '%')->count();
+        
+        $dailyData = \Illuminate\Support\Facades\DB::table('attendances')
+            ->select(
+                \Illuminate\Support\Facades\DB::raw('DATE(created_at) as date'),
+                \Illuminate\Support\Facades\DB::raw('status'),
+                \Illuminate\Support\Facades\DB::raw('count(*) as count')
+            )
+            ->where('created_at', 'like', $currentMonth . '%')
+            ->groupBy('date', 'status')
+            ->orderBy('date')
+            ->get();
+        
+        $lastWeekData = \Illuminate\Support\Facades\DB::table('attendances')
+            ->select(
+                \Illuminate\Support\Facades\DB::raw('DATE(created_at) as date'),
+                \Illuminate\Support\Facades\DB::raw('status'),
+                \Illuminate\Support\Facades\DB::raw('count(*) as count')
+            )
+            ->where('created_at', '>=', now()->subDays(7))
+            ->groupBy('date', 'status')
+            ->orderBy('date')
+            ->get();
+        
+        return [
+            'total_attendance_records' => $attendanceCount,
+            'current_month_attendance' => $monthlyAttendance,
+            'current_month' => $currentMonth,
+            'daily_data_current_month' => $dailyData,
+            'last_week_data' => $lastWeekData,
+            'sample_attendance_records' => \App\Models\Attendance::latest()->take(5)->get(['id', 'student_id', 'date', 'status', 'created_at'])
+        ];
+    } catch (\Exception $e) {
+        return [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ];
+    }
+});
+
 Route::get('/test-admin-controller', function () {
     try {
         $controller = new \App\Http\Controllers\AdminController();
