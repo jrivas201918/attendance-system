@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/teacher/analytics', [\App\Http\Controllers\TeacherAnalyticsController::class, 'index'])->name('teacher.analytics');
+    Route::get('/teacher/export/attendance', [\App\Http\Controllers\TeacherAnalyticsController::class, 'exportAttendance'])->name('teacher.export.attendance');
+    Route::get('/teacher/export/students', [\App\Http\Controllers\TeacherAnalyticsController::class, 'exportStudents'])->name('teacher.export.students');
 });
 
 require __DIR__.'/auth.php';
