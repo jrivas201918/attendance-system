@@ -13,7 +13,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold mb-2">👋 Welcome back, {{ Auth::user()->name }}!</h1>
-                            <p class="text-indigo-100 text-lg">{{ now()->format('l, F j, Y') }} | {{ now()->format('g:i A') }}</p>
+                            <p class="text-indigo-100 text-lg">{{ now()->timezone('Asia/Manila')->format('l, F j, Y') }} | {{ now()->timezone('Asia/Manila')->format('g:i A') }}</p>
                             <p class="text-indigo-100 mt-2">Here's your system overview for today...</p>
                             
                             <!-- Last Logout info -->
