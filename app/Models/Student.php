@@ -15,7 +15,8 @@ class Student extends Model
         'email',
         'course',
         'year_level',
-        'user_id', // <-- Add this line!
+        'user_id',
+        'room_id',
     ];
 
     protected $casts = [
@@ -30,5 +31,10 @@ class Student extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
     }
 }

@@ -57,7 +57,10 @@ class StudentController extends Controller
             'History',
             'English Literature',
         ];
-        return view('students.create', compact('courses'));
+        
+        $rooms = \App\Models\Room::where('user_id', auth()->id())->orderBy('name')->get();
+        
+        return view('students.create', compact('courses', 'rooms'));
     }
 
     /**
@@ -71,6 +74,7 @@ class StudentController extends Controller
             'email' => 'required|email|max:255|unique:students',
             'course' => 'required|string|max:255',
             'year_level' => 'required|integer|min:1|max:10',
+            'room_id' => 'nullable|exists:rooms,id',
         ]);
 
         Student::create([
@@ -79,6 +83,7 @@ class StudentController extends Controller
             'email' => $request->email,
             'course' => $request->course,
             'year_level' => $request->year_level,
+            'room_id' => $request->room_id,
             'user_id' => auth()->id(), // This line is critical!
         ]);
 

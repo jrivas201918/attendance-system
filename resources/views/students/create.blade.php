@@ -66,6 +66,20 @@
                     <x-input-error :messages="$errors->get('year_level')" class="mt-2" />
                 </div>
 
+                <!-- Room Assignment -->
+                <div class="mt-4">
+                    <x-input-label for="room_id" :value="__('Assign to Room (Optional)')" />
+                    <select id="room_id" name="room_id" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm block mt-1 w-full">
+                        <option value="">No Room Assignment</option>
+                        @foreach ($rooms as $room)
+                            <option value="{{ $room->id }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                                {{ $room->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('room_id')" class="mt-2" />
+                </div>
+
 
                 <div class="flex items-center justify-end mt-6 space-x-4">
                     <a href="{{ route('students.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-gray-800 dark:text-gray-200 uppercase tracking-widest hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150">

@@ -19,6 +19,9 @@
                         <x-nav-link :href="route('students.index')" :active="request()->routeIs('students.*')">
                             {{ __('Students') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.*')">
+                            {{ __('Rooms') }}
+                        </x-nav-link>
                     @endif
                     @if(auth()->user()->isAdmin())
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">

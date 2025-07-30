@@ -43,6 +43,13 @@ Route::middleware('auth')->group(function () {
         Route::resource('students', StudentController::class);
     });
 
+    // Room routes (teachers only)
+    Route::middleware('teacher')->group(function () {
+        Route::resource('rooms', \App\Http\Controllers\RoomController::class);
+        Route::get('/rooms/{room}/attendance', [\App\Http\Controllers\RoomController::class, 'attendance'])->name('rooms.attendance');
+        Route::post('/rooms/{room}/attendance', [\App\Http\Controllers\RoomController::class, 'saveAttendance'])->name('rooms.save-attendance');
+    });
+
     // Attendance routes (teachers only)
     Route::middleware('teacher')->group(function () {
         Route::get('/attendance/create', [\App\Http\Controllers\AttendanceController::class, 'create'])->name('attendance.create');
