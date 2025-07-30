@@ -71,13 +71,6 @@ php artisan serve
 
 The application will now be available at `http://127.0.0.1:8000`.
 
-## 📊 Future Improvements
-- [ ] **Role-based Access Control:** Differentiate between Admin and Teacher roles.
-- [ ] **Enhanced Authentication:** Add features like socialite login or two-factor authentication.
-- [ ] **Email Notifications:** Automatically send attendance reports via email.
-- [ ] **Advanced Analytics:** A dedicated dashboard with charts and more detailed insights.
-- [ ] **Deployment:** Set up a deployment pipeline to a cloud platform.
-
 ## 👨‍💻 Author
 **Joshua Tegio Rivas**
 
