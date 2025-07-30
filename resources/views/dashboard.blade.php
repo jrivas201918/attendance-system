@@ -52,16 +52,16 @@
                         </div>
                     </a>
 
-                    <a href="{{ route('attendance.create') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                    <a href="{{ route('rooms.index') }}" class="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
                         <div class="flex items-center">
                             <div class="p-2 bg-green-100 rounded-lg">
                                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900">Mark Attendance</p>
-                                <p class="text-xs text-gray-500">Record today</p>
+                                <p class="text-sm font-medium text-gray-900">My Rooms</p>
+                                <p class="text-xs text-gray-500">Mark attendance</p>
                             </div>
                         </div>
                     </a>
@@ -141,6 +141,50 @@
                     </div>
                 </a>
             </div>
+
+            <!-- Room Quick Actions (Teachers Only) -->
+            @if(auth()->user()->isTeacher())
+                @php
+                    $rooms = \App\Models\Room::where('user_id', auth()->id())->withCount('students')->latest()->take(3)->get();
+                @endphp
+                @if($rooms->count() > 0)
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">🏠 Quick Room Access</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @foreach($rooms as $room)
+                                    <a href="{{ route('rooms.attendance', $room) }}" 
+                                       class="block p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors duration-200">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h4 class="font-medium text-gray-900">{{ $room->name }}</h4>
+                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                                {{ $room->students_count }} students
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">
+                                            📝 Click to mark attendance
+                                        </p>
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('rooms.show', $room) }}" 
+                                               class="text-xs text-blue-600 hover:text-blue-800">View</a>
+                                            <a href="{{ route('rooms.edit', $room) }}" 
+                                               class="text-xs text-yellow-600 hover:text-yellow-800">Edit</a>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                            @if($rooms->count() >= 3)
+                                <div class="mt-4 text-center">
+                                    <a href="{{ route('rooms.index') }}" 
+                                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        View all rooms →
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+            @endif
 
             <!-- Weather and System Info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
