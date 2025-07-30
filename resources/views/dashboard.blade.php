@@ -153,24 +153,31 @@
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">🏠 Quick Room Access</h3>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @foreach($rooms as $room)
-                                    <a href="{{ route('rooms.attendance', $room) }}" 
-                                       class="block p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors duration-200">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <h4 class="font-medium text-gray-900">{{ $room->name }}</h4>
-                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                                                {{ $room->students_count }} students
-                    </span>
+                                    <div class="border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors duration-200">
+                                        <a href="{{ route('rooms.attendance', $room) }}" class="block p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h4 class="font-medium text-gray-900">{{ $room->name }}</h4>
+                                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                                    {{ $room->students_count }} students
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-gray-600">
+                                                📝 Click to mark attendance
+                                            </p>
+                                        </a>
+                                        <div class="px-4 pb-4">
+                                            <div class="flex space-x-3">
+                                                <a href="{{ route('rooms.show', $room) }}" 
+                                                   class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                                    👁️ View
+                                                </a>
+                                                <a href="{{ route('rooms.edit', $room) }}" 
+                                                   class="text-xs text-yellow-600 hover:text-yellow-800 font-medium">
+                                                    ✏️ Edit
+                                                </a>
+                                            </div>
                                         </div>
-                                        <p class="text-sm text-gray-600 mb-3">
-                                            📝 Click to mark attendance
-                                        </p>
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('rooms.show', $room) }}" 
-                                               class="text-xs text-blue-600 hover:text-blue-800">View</a>
-                                            <a href="{{ route('rooms.edit', $room) }}" 
-                                               class="text-xs text-yellow-600 hover:text-yellow-800">Edit</a>
-                                        </div>
-                                    </a>
+                                    </div>
                                 @endforeach
                             </div>
                             @if($rooms->count() >= 3)
