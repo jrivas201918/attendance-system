@@ -16,10 +16,10 @@
                             <p class="text-indigo-100 text-lg">{{ now()->timezone('Asia/Manila')->format('l, F j, Y') }} | {{ now()->timezone('Asia/Manila')->format('g:i A') }}</p>
                             <p class="text-indigo-100 mt-2">Here's your system overview for today...</p>
                             
-                            <!-- Last Logout info -->
-                            @php
-                                $lastLogout = auth()->user()->last_logout_at;
-                            @endphp
+                    <!-- Last Logout info -->
+                        @php
+                            $lastLogout = auth()->user()->last_logout_at;
+                        @endphp
                             @if($lastLogout)
                                 <p class="text-indigo-100 mt-2 text-sm">
                                     📅 Last Logout: {{ \Carbon\Carbon::parse($lastLogout)->timezone('Asia/Manila')->format('F j, Y g:i A') }}
@@ -159,7 +159,7 @@
                                             <h4 class="font-medium text-gray-900">{{ $room->name }}</h4>
                                             <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                                 {{ $room->students_count }} students
-                                            </span>
+                    </span>
                                         </div>
                                         <p class="text-sm text-gray-600 mb-3">
                                             📝 Click to mark attendance
@@ -204,8 +204,8 @@
                                     <p class="text-sm text-gray-600">{{ $weather['weather'][0]['main'] }} ({{ $weather['weather'][0]['description'] }})</p>
                                     <p class="text-2xl font-bold text-blue-600">{{ round($weather['main']['temp']) }}°C</p>
                                 </div>
-                            </div>
-                        @else
+                        </div>
+                    @else
                             <div class="text-center py-4">
                                 <p class="text-gray-500">Unable to fetch weather data</p>
                             </div>

@@ -13,15 +13,15 @@
                 </div>
             @endif
 
-            @if ($errors->any())
+                    @if ($errors->any())
                 <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
@@ -32,8 +32,8 @@
                     </div>
 
                     @if($students->count() > 0)
-                        <form method="POST" action="{{ route('attendance.store') }}" class="space-y-6">
-                            @csrf
+                    <form method="POST" action="{{ route('attendance.store') }}" class="space-y-6">
+                        @csrf
                             <input type="hidden" name="date" value="{{ $today }}">
 
                             <!-- Attendance Table -->
@@ -71,7 +71,7 @@
                                                                 {{ strtoupper(substr($student->name, 0, 1)) }}
                                                             </span>
                                                         </div>
-                                                        <div>
+                        <div>
                                                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                                                                 {{ $student->name }}
                                                             </div>
@@ -104,12 +104,12 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
+                        </div>
 
                             <!-- Summary -->
                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                 <div class="flex items-center justify-between">
-                                    <div>
+                        <div>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">
                                             Total Students: <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $students->count() }}</span>
                                         </p>
@@ -123,7 +123,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                        </div>
 
                             <!-- Submit Button -->
                             <div class="flex items-center justify-end space-x-4">
@@ -133,7 +133,7 @@
                                 <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
                                     📝 Save Attendance
                                 </button>
-                            </div>
+                        </div>
                         </form>
                     @else
                         <div class="text-center py-8">

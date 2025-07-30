@@ -34,28 +34,28 @@
                                     <p class="text-gray-600 text-sm mb-4">{{ $room->description }}</p>
                                 @endif
 
-                                <div class="flex flex-col space-y-2">
+                                <div class="space-y-3">
                                     <!-- Primary Action: Mark Attendance -->
                                     <a href="{{ route('rooms.attendance', $room) }}" 
-                                       class="bg-green-500 hover:bg-green-700 text-white text-sm font-bold py-3 px-4 rounded text-center transition-colors duration-200">
+                                       class="block w-full bg-green-500 hover:bg-green-700 text-white text-sm font-bold py-3 px-4 rounded text-center transition-colors duration-200">
                                         📝 Mark Attendance
                                     </a>
                                     
                                     <!-- Secondary Actions -->
-                                    <div class="flex space-x-2">
+                                    <div class="grid grid-cols-3 gap-2">
                                         <a href="{{ route('rooms.show', $room) }}" 
-                                           class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-3 rounded flex-1 text-center">
+                                           class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-3 px-3 rounded text-center transition-colors duration-200">
                                             👁️ View
                                         </a>
                                         <a href="{{ route('rooms.edit', $room) }}" 
-                                           class="bg-yellow-500 hover:bg-yellow-700 text-white text-sm font-bold py-2 px-3 rounded flex-1 text-center">
+                                           class="bg-yellow-500 hover:bg-yellow-700 text-white text-sm font-bold py-3 px-3 rounded text-center transition-colors duration-200">
                                             ✏️ Edit
                                         </a>
-                                        <form method="POST" action="{{ route('rooms.destroy', $room) }}" class="flex-1" 
+                                        <form method="POST" action="{{ route('rooms.destroy', $room) }}" 
                                               onsubmit="return confirm('Are you sure you want to delete this room?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="w-full bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded">
+                                            <button type="submit" class="w-full bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-3 px-3 rounded transition-colors duration-200">
                                                 🗑️ Delete
                                             </button>
                                         </form>
