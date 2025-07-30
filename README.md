@@ -26,7 +26,7 @@ This Student Attendance Management System is designed to streamline attendance t
 - **Role-based Access Control**: Separate interfaces for administrators and teachers
 - **Real-time Analytics**: Interactive charts and statistics
 - **Modern UI/UX**: Responsive design with Tailwind CSS
-- **Email Integration**: Password reset functionality with SendGrid
+- **Email Integration**: Password reset functionality with Gmail Password App
 - **Export Capabilities**: CSV export for attendance and student data
 
 ## 🚀 Key Features
@@ -101,7 +101,7 @@ Users (Teachers/Admins)
 | **Frontend** | Blade Templates, Tailwind CSS | 3.x |
 | **Database** | PostgreSQL (Production), MySQL (Development) | - |
 | **Charts** | Chart.js | 4.x |
-| **Email Service** | SendGrid | - |
+| **Email Service** | Gmail Password App | - |
 | **Deployment** | Render.com | - |
 | **Version Control** | Git | - |
 
@@ -188,10 +188,10 @@ DB_PASSWORD=your_password
 DB_SSLMODE=require
 
 MAIL_MAILER=smtp
-MAIL_HOST=smtp.sendgrid.net
+MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USERNAME=apikey
-MAIL_PASSWORD=your_sendgrid_api_key
+MAIL_PASSWORD=your_gmail_api_key
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS=your-email@domain.com
 MAIL_FROM_NAME="Attendance System"
@@ -347,11 +347,11 @@ php artisan route:clear
 - **Room Management**: Organize students into rooms
 - **Analytics Dashboard**: Charts and statistics
 - **Export Functionality**: CSV export capabilities
-- **Email Integration**: Password reset with SendGrid
+- **Email Integration**: Password reset with Gmail Password App
 
 ### Phase 4: Deployment & Polish (Week 7-8)
 - **Production Deployment**: Render.com setup
-- **Email Configuration**: SendGrid integration
+- **Email Configuration**: Gmail Password App integration
 - **UI/UX Improvements**: Dashboard redesigns
 - **Performance Optimization**: Caching and optimization
 
@@ -364,7 +364,7 @@ php artisan route:clear
 
 #### 2. Email Configuration
 - **Challenge**: Setting up reliable email delivery
-- **Solution**: Integrated SendGrid with proper authentication
+- **Solution**: Integrated Gmail Password App with proper authentication
 - **Result**: Reliable password reset functionality
 
 #### 3. Database Migration Issues
@@ -424,7 +424,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Tailwind CSS**: For the utility-first CSS framework
 - **Chart.js**: For interactive data visualization
 - **Render.com**: For reliable hosting and deployment
-- **SendGrid**: For email delivery services
+- **Gmail Password App**: For email delivery services
 
 ---
 
